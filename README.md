@@ -12,3 +12,4 @@ pkg> add IJulia # utiliser ] pour entrer en mode "package"
 julia> using IJulia # utiliser DEL pour en sortir
 julia> notebook(detached=true, dir="") # une fenêtre de votre browser devrait apparaître
 ```
+Test :)
