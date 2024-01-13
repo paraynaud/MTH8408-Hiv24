@@ -1,7 +1,7 @@
-using ADNLPModels #Pkg.add("ADNLPModels")
-using NLPModels #Pkg.add("NLPModels")
-using NLPModelsJuMP #Pkg.add("NLPModelsJuMP")
-using NLPModelsIpopt #Pkg.add("NLPModelsIpopt")
+using ADNLPModels 
+using NLPModels 
+using NLPModelsJuMP 
+using NLPModelsIpopt 
 
 
 
@@ -11,6 +11,5 @@ x0 = [-1.2; 1.0]
 
 #Create an ADNLPModel
 nlp = ADNLPModel(f, x0)
-x = zeros(2)
-obj(nlp, x)
-hess(nlp, x)
+stats = ipopt(nlp)
+print(stats)
