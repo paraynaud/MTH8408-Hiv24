@@ -1,0 +1,40 @@
+#using Pkg; Pkg.add("Test")
+using Test
+# Demander le test secret pour lbfgs
+@testset begin
+    #Unit/Validation Tests
+    using Logging, Test
+    stats = with_logger(NullLogger()) do 
+        limited_bfgs(himmelblau) 
+    end
+    @test stats.status == :first_order
+    @test stats.solution ≈ [3.584428266659278, -1.8481265666485827] atol = 1e-6
+    @show (stats.status, stats.solution)
+    stats = with_logger(NullLogger()) do 
+        limited_bfgs(problem2) 
+    end
+    @test stats.status == :unbounded
+    @show (stats.status, stats.solution)
+    stats = with_logger(NullLogger()) do 
+        limited_bfgs(rosenbrock) 
+    end
+    @test stats.solution ≈ [1., 1.] atol = 1e-6
+    @show (stats.status, stats.solution)
+    stats = with_logger(NullLogger()) do 
+        limited_bfgs(pb_du_cours, x = [-1.001, -1.001]) 
+    end
+    @test stats.status == :unbounded
+    @show (stats.status, stats.solution)
+    stats = with_logger(NullLogger()) do 
+        limited_bfgs(pb_du_cours, x = [1.5, .5]) 
+    end
+    @test stats.status == :first_order
+    @test stats.solution ≈ [1., 0.] atol = 1e-6
+    @show (stats.status, stats.solution)
+    stats = with_logger(NullLogger()) do 
+        limited_bfgs(pb_du_cours, x = [.5, .5]) 
+    end
+    @test stats.status == :first_order
+    @test stats.solution ≈ [1., 0.] atol = 1e-6
+    @show (stats.status, stats.solution)
+end

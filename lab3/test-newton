@@ -1,0 +1,40 @@
+using Test
+
+# Demander le test secret pour newton-cg
+@testset begin
+    #Unit/Validation Tests
+    using Logging, Test
+    stats = with_logger(NullLogger()) do 
+        armijo_Newton_cg(himmelblau) 
+    end
+    @test stats.status == :first_order
+    @test stats.dual_feas ≤ 1e-6 + 1e-6 * norm(grad(himmelblau, himmelblau.meta.x0))
+    @show (stats.status, stats.solution)
+    stats = with_logger(NullLogger()) do 
+        armijo_Newton_cg(problem2) 
+    end
+    @test stats.status == :unbounded
+    @show (stats.status, stats.solution)
+    stats = with_logger(NullLogger()) do 
+        armijo_Newton_cg(rosenbrock) 
+    end
+    @test stats.solution ≈ [1., 1.] atol = 1e-5
+    @show (stats.status, stats.solution)
+    stats = with_logger(NullLogger()) do 
+        armijo_Newton_cg(pb_du_cours, x = [-1.001, -1.001]) 
+    end
+    @test stats.status == :unbounded
+    @show (stats.status, stats.solution)
+    stats = with_logger(NullLogger()) do 
+        armijo_Newton_cg(pb_du_cours, x = [1.5, .5]) 
+    end
+    @test stats.status == :first_order
+    @test stats.solution ≈ [1., 0.] atol = 1e-6
+    @show (stats.status, stats.solution)
+    stats = with_logger(NullLogger()) do 
+        armijo_Newton_cg(pb_du_cours, x = [.5, .5]) 
+    end
+    @test stats.status == :first_order
+    @test stats.solution ≈ [1., 0.] atol = 1e-6
+    @show (stats.status, stats.solution)
+end
